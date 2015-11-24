@@ -151,3 +151,67 @@ summary(lm.fit2)
 #Taking the tranformation of variables; root of HP, and square of accelaration
 lm.fit3 = lm(mpg~log(weight)+sqrt(horsepower)+acceleration+I(acceleration^2))
 summary(lm.fit3)
+
+
+
+
+library(ISLR)
+attach(Auto)
+str(Auto)
+Reg1 =lm(mpg ~ horsepower, data=Auto) 
+summary(Reg1)   #Residual std error is 4.906 for this model. Mupliple R-Squared is 0.6059 which means
+# 60.59% of the variance in mpg is explained by horsepower.
+
+
+mean(Auto$mpg) #Mean is 23.44592. So the percentage error is 4.906/23.44592 is 20%
+
+# 95% confidence interval of the coefficients
+confint(Reg1)
+
+
+
+# 95% Confidence & Prediction Intervals for horsepower=98
+predict(Reg1, data.frame(horsepower=c(98)), interval="confidence")
+predict(Reg1, data.frame(horsepower=c(98)), interval="prediction")
+
+
+#PLotting response & predictor. Drawing regression line on this
+plot(mpg, horsepower, pch=20)
+abline(Reg1, lwd =3, col ="red ")
+
+#Use the plot() function to produce diagnostic plots of the least squares regression fit.
+par(mfrow=c(2,2))
+plot(Reg1)
+
+
+#################  9th question   #####################
+
+library(ISLR)
+attach(Auto)
+pairs(Auto)
+
+#Checking classes of all the variables in Auto dataset
+sapply(Auto, function (x) class(x))
+
+#Taking correlation of all the variables except categorical variable
+cor(subset(Auto, select=-name))
+
+
+Reg2 = lm(mpg ~ .-name, data = Auto)
+summary(Reg2)
+
+
+#Use the plot() function to produce diagnostic plots of the least squares regression fit.
+par(mfrow=c(2,2))
+plot(Reg2)
+
+
+
+#Now lets pick interaction terms and make linear model
+#we can choose interaction terms using varaibles with highest correlation
+
+cor(subset(Auto, select=-name)) #highest correlation pairs are displacement cylinders and displacement weight 
+
+Reg3 = lm(mpg ~ displacement*cylinders + displacement*weight, data=Auto)
+summary(Reg3)
+
