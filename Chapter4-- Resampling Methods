@@ -1,0 +1,119 @@
+
+       ## LEAVE ONE-OUT CROSS VALIDATION
+       ## K-FOLD CROSS VALIDATION
+       ## THE BOOTSTRAP
+       
+
+
+######### CHapter 5 Resampling Techniques
+### LOOCV
+
+library(ISLR)
+set.seed(1)
+attach(Auto)
+plot(mpg~horsepower, data=Auto)
+#glm makes the model LINEAR if we dont pass the family=binomial in formula
+LogReg1 = glm(mpg~horsepower, data=Auto)
+coef(LogReg1)
+#And 
+Reg1 = lm(mpg~horsepower, data=Auto)
+coef(Reg1)
+
+######   LEAVE ONE-OUT CROSS VALIDATION or LOOCV     ################
+
+# We us cv.glm() for loocv which is part of the boot library
+library(ISLR)
+set.seed(1)
+attach(Auto)
+library(boot)
+LogReg2 = glm(mpg~horsepower, data=Auto)
+cv.err = cv.glm(Auto, LogReg2)
+
+#Delta is estimate of prediction error. ithas two values. 1st is raw leave-one-out or leiu CV result. 2nd one is biased corrected 
+#version of it. Biased corrected version is designed to compensate for the bias introduced by not using leave-one-out cross-validation.
+#Both delta values are identical so cv for test error is 24.23
+cv.err$delta 
+
+#We can repeat the process of getting LOOCV values using for() function for polynomials for i=1 to i=5, compute the associated 
+#cross-validation error, and stores it in the ith element of the vector cv.error. We begin by initializing the vector.
+
+cv.error = rep(0,5)
+for(i in 1:5) {
+  LogReg3 = glm(mpg~poly(horsepower, i), data=Auto)  
+  cv.error[i] = cv.glm(Auto, LogReg3)$delta[1]
+  }
+
+#MSE for all the polynomials
+print(cv.error)
+
+plot(cv.error, type="b")
+#As we can see in the plot, sharp drop in MSE from linear to quadratic but no clear improvments using higher order polynomials
+
+
+#################    K-FOLD CROSS VALIDATION   ############
+
+#cv.glm() can also be used to compute K-fold cross validation. If we choose 10 fold, it will train the model on 9 folds and
+#test the model on 1 excluded set. this process will be iterated 10 times and MSE will be calcualated
+library(boot)
+library(ISLR)
+attach(Auto)
+set.seed(17)
+cv.K= rep(0 ,10)
+for (i in 1:10) {
+   LogReg4=glm(mpg∼poly(horsepower ,i),data=Auto)
+   cv.K[i]=cv.glm (Auto ,LogReg4 ,K=10)$delta [1]
+   }
+print(cv.K)
+plot(cv.K, type="b", col="red") #Drawing this k-fold MSE graph
+
+
+###########     THE BOOTSRAP METHOD OF RESAMPLING     ################################
+library(ISLR)
+attach(Portfolio)
+library(boot)
+set.seed(1)
+str(Portfolio) #It has two variables X & Y with 100 observations
+
+#Here we create a function, alpha.fn(), which takes as input the (X, Y) data as well as a vector indicating which observations
+#should be used to estimate α. The function then outputs the estimate for α (coefficient)based on the selected observations
+alpha.fn=function (data ,i){
+   X=data$X[i]
+   Y=data$Y[i]
+   return ((var(Y)-cov (X,Y))/(var(X)+var(Y) -2* cov(X,Y)))
+   }
+
+alpha.fn(Portfolio, 1:100) #This command tells R to estimate α using all 100 observations.
+
+#This command uses the sample() function to randomly select 100 observations from the range 1 to 100, with replacement.
+set.seed(1)
+alpha.fn(Portfolio, sample(100,100, replace = T))
+#We can implement a bootstrap analysis by performing this command many times, recording all of the corresponding estimates
+#for α, and computing the resulting standard deviation. However, the boot() function automates boot() this approach. 
+
+#Below we produce R = 1, 000 bootstrap estimates for α. R is  number of bootstrap estimates
+library(boot)
+boot(Portfolio ,alpha.fn,R=1000)
+#The final output shows that using the original data, ˆα = 0.5758, and that the bootstrap estimate for SE(ˆα) is 0.0886.
+
+
+#####     ESTIMATING THE ACCURACY OF LINEAR REGRESSION MODEL WITH BOOTSTRAP     ###########
+
+#Here we use the bootstrap approach in order to assess the variability of the estimates for β0 and β1, the intercept
+#and slope terms for the linear regression model that uses horsepower to predict mpg in the Auto data set.
+
+#Creating a static function
+boot.fn=function (data ,i )
+   return (coef(lm(mpg∼horsepower ,data=data ,subset =i)))
+
+library(ISLR)
+attach(Auto)
+boot(Auto ,boot.fn ,1000) #Here SE(β0ˆ)=0.871 and  SE(β1ˆ)=0.0075 where SE=Std error
+#use the boot() function to compute the standard errors of 1,000 bootstrap estimates for the intercept and slope terms.
+
+#Here we see that E(β0ˆ)=0.717 and  SE(β1ˆ)=0.0064 is with linear regression
+summary (lm(mpg∼horsepower ,data=Auto))$coef
+
+#THere is diff of SE from bootstrap & linear regression cuz LR assumes variability comes from irreduciable error
+#Bootstrap doesnt rely on any such assumption
+
+
