@@ -79,7 +79,7 @@ str(Portfolio) #It has two variables X & Y with 100 observations
 alpha.fn=function (data ,i){
    X=data$X[i]
    Y=data$Y[i]
-   return ((var(Y)-cov (X,Y))/(var(X)+var(Y) -2* cov(X,Y)))
+   return ((var(Y)-cov (X,Y))/(var(X)+var(Y) -2* cov(X,Y))) #This formula is basically variance of X & Y
    }
 
 alpha.fn(Portfolio, 1:100) #This command tells R to estimate α using all 100 observations.
