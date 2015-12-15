@@ -75,7 +75,8 @@ set.seed(1)
 str(Portfolio) #It has two variables X & Y with 100 observations
 
 #Here we create a function, alpha.fn(), which takes as input the (X, Y) data as well as a vector indicating which observations
-#should be used to estimate α. The function then outputs the estimate for α (coefficient)based on the selected observations
+#should be used to estimate α. The function then outputs the estimate for α (coefficient)based on the selected observations. Here
+# i (index) basically tells which observations get represented and which not.
 alpha.fn=function (data ,i){
    X=data$X[i]
    Y=data$Y[i]
