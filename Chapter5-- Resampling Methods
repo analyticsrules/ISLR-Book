@@ -58,12 +58,12 @@ library(boot)
 library(ISLR)
 attach(Auto)
 set.seed(17)
-cv.K= rep(0 ,10)
-for (i in 1:10) {
+cv.K= rep(0 ,5)
+for (i in 1:5) {
    LogReg4=glm(mpg∼poly(horsepower ,i),data=Auto)
    cv.K[i]=cv.glm (Auto ,LogReg4 ,K=10)$delta [1]
    }
-print(cv.K)
+print(cv.K) #print MSE values for 5 models
 plot(cv.K, type="b", col="red") #Drawing this k-fold MSE graph
 
 
