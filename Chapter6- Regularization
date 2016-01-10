@@ -1,11 +1,12 @@
 
 ###CHapter 6
 1. Best Subset
-2. Forward Selection
-3. Backward Selection
-4. Choosing Models using CV & Validation Approach
+2. Forward Selection & Backward Selection
+3. Choosing Models using CV & Validation Approach
+4. Ridge & Lasso Regression
+5. Principal Components Regression & Partial Least Square Regression
 
-################   BEST SUBSET SELECTION        ###################
+################ 1.  BEST SUBSET SELECTION        ###################
 
 library(ISLR)
 attach(Hitters)
@@ -50,9 +51,9 @@ plot(RegSub1, scale="bic")
 # 0f this model. This is sixth model out of the 19 we made.
 coef(RegSub1, 6)
 
-#############################################################################
-###############   FORWARD AND BACKWARD STEPWISE SELECTION    #################
-##############################################################################
+#################################################################################
+###############  2.  FORWARD AND BACKWARD STEPWISE SELECTION    #################
+#################################################################################
 
 #We can also do forward & backward stepwise using regsubsets() fn by giving method="forward/backward"
 
@@ -71,8 +72,8 @@ coef(Reg.bwd, 7)
 
 
 
-#############################################################################################
-#####   CHOOSING AMONGST MODELS USING VALIDATION APPROACH & CROSS-VALIDATION        ##########
+##############################################################################################
+#####  3. CHOOSING AMONGST MODELS USING VALIDATION APPROACH & CROSS-VALIDATION      ##########
 ##############################################################################################
 
 library(ISLR)
@@ -112,8 +113,8 @@ coef(regfit .best1 ,10)
 
 
 
-#############################################################################
-###############        RIDGE & LASSO REGRESSION             #################
+##############################################################################
+###############   4. RIDGE & LASSO REGRESSION          #######################
 ##############################################################################
 
 library(ISLR)
@@ -230,7 +231,7 @@ lasso.coef
 
 
 ####################################################################################################
-#####      PRINCIPAL COMPONENT REGRESSION & PARTIAL LEAST SQUARES (PCR/PCA & PLS)  #################
+#####   5. PRINCIPAL COMPONENT REGRESSION & PARTIAL LEAST SQUARES (PCR/PCA & PLS)  #################
 ####################################################################################################
 
 #PCR & PLS are very well explained in chapter 10. Here they're used as an alternative to OLS for linear regression
