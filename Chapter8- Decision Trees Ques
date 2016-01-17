@@ -178,3 +178,40 @@ Bag.pred = predict(Bag.Hit, newdata = test)
 mean((Bag.pred - test$Salary)^2)
 #TESt MSE with bagging is just o.231 which is better than boosting
 
+
+
+
+###############################     Question 11    Caravan Data set     #########################################
+
+(a) Create a training set consisting of the first 1,000 observations,and a test set consisting of the remaining observations.
+(b) Fit a boosting model to the training set with Purchase as the response and the other variables as predictors. Use 1,000 trees,
+    and a shrinkage value of 0.01. Which predictors appear to be the most important?
+(c) Use the boosting model to predict the response on the test data. Predict that a person will make a purchase if the estimated 
+    probability of purchase is greater than 20 %. Form a confusion matrix. What fraction of the people predicted to make a purchase
+    do in fact make one? How does this compare with the results obtained from applying logistic regression to this data set?
+
+library(ISLR)
+attach(Caravan)
+
+caravan = Caravan
+caravan$Purchase = ifelse(caravan$Purchase=="Yes", 1,0)
+train = caravan[1:1000,]
+test = caravan[1001:5822,]
+
+library(gbm)
+caravan.boost = gbm(Purchase ~., data=train, n.trees=1000, shrinkage = 0.01, distribution = "bernoulli")
+summary(caravan.boost)
+
+pred.boost = predict(caravan.boost, newdata = test, n.trees=1000, type = "response")
+pred.boost = ifelse(pred.boost > 0.2, 1, 0)
+table(pred.boost, test$Purchase)
+# 37/(37+252)= 13% of people predicted to make purchase actually purchase
+
+
+#GLM
+LR = glm(Purchase ~ ., data=train, family = binomial)
+LR.pred = predict(LR, newdata=test, type="response")
+LR.pred = ifelse(LR.pred >0.2, 1, 0)
+table(LR.pred, test$Purchase)
+# 58/(58+231) = 20% of people predicted to make purchase using logistic regression actually end up making one. This is higher than boosting.
+
