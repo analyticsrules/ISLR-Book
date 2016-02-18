@@ -35,7 +35,7 @@ RegSub1.Summ = summary(RegSub1)
 names(RegSub1.Summ) #As we see, summary gives rss, adjsuted r-squared, Cp, BUC etc. We can examine these to select best model
 
 #We see that r-Squared for including only one var is 32.14% while for all variables, it is 54.6%
-RegFit.Summ$rsq
+RegSub1.Summ$rsq
 
 #Drawig the graph of RSS and Adjusted R-squared
 
