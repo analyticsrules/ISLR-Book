@@ -64,7 +64,6 @@ pve
 # We see that the first principal component explains 62.0% of the variance in the data,
 # the next principal component explains 24.7% of the variance, and so forth.
 
-
 #We can plot the PVE explained by each component, as well as the cumulative PVE, as follows
 plot(pve , xlab="Principal Comp", ylab= "Proport of Variance Explained", ylim = c(0,1) ,type="b")
 
@@ -76,7 +75,69 @@ cumsum(a)  #Ans would be 1, 3, 11, 8
 
 
 
-####################################################################################################################
+##############################         K Means and H Clustering         ########################################
 
+
+set.seed (2)
+x=matrix(rnorm (50*2) , ncol =2)
+x[1:25 ,1]= x[1:25 ,1]+3
+x[1:25 ,2]= x[1:25 ,2]-4
+edit(x)
+KM = kmeans(x,2, nstart =20)
+KM$cluster
+
+plot(x, col =(KM$cluster +1) , main="K-Means Clustering
+Results with K=2", xlab ="", ylab="", pch =20, cex =2)
+
+# Note that km.out$tot.withinss is the total within-cluster sum of squares, which we seek to minimize by performing K-means clustering. 
+# nstart option that attempts multiple initial configurations and reports on the best one. For example, adding nstart=20 will generate
+# 25 initial configurations.
+set.seed(3)
+KM = kmeans(x,3, nstart =1)
+KM$tot.withinss
+KM = kmeans(x,3, nstart =20)
+KM$tot.withinss
+
+
+############################           Heirarchical Clustering        #####################################
+
+# The dist() function is used to compute the 50 × 50 inter-observation Euclidean distance matrix.
+HCcomplete = hclust(dist(x), method = "complete")
+HCaverage = hclust(dist(x), method = "average")
+HCsingle = hclust(dist(x), method = "single")
+
+
+par(mfrow =c(1,3))
+plot(HCcomplete ,main =" Complete Linkage ", xlab="", sub ="", cex =.9)
+
+plot(HCaverage , main =" Average Linkage ", xlab="", sub ="", cex =.9)
+
+plot(HCsingle , main=" Single Linkage ", xlab="", sub ="", cex =.9)
+
+
+# To determine the cluster labels for each observation associated with a
+# given cut of the dendrogram, we can use the cutree() function:
+cutree(HCcomplete , 2)
+cutree(HCaverage , 2)
+cutree(HCsingle , 2)
+
+#For this data, complete and average linkage generally separate the observationsinto their correct groups. However, single linkage 
+identifies one point as belonging to its own cluster. A more sensible answer is obtained when four clusters are selected, although
+there are still two singletons.
+cutree (HCsingle , 4)
+
+# To scale the variables before performing hierarchical clustering of the observations, we use the scale() function:
+xsc= scale(x)
+plot(hclust (dist(xsc), method = "complete"), main ="Hierarchical
+       Clustering with Scaled Features")
+
+
+
+# Correlation-based distance can be computed using the as.dist() function, which converts an arbitrary square symmetric matrix into 
+#  a form thatthe hclust() function recognizes as a distance matrix.
+x = matrix(rnorm (30*3) , ncol =3)
+dd = as.dist(1- cor(t(x)))
+plot(hclust (dd, method = "complete"), main= "Complete Linkage
+       with Correlation -Based Distance", xlab="", sub ="")
 
 
